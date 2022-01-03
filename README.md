@@ -6,3 +6,8 @@ cargo new adder --lib
 creates subfolder adder.
 
 cargo test --> runs tests
+
+cargo new minigrep --> create a project
+
+adding to main..... but then refactoring
+
