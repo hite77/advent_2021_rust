@@ -7,7 +7,10 @@ creates subfolder adder.
 
 cargo test --> runs tests
 
-cargo new minigrep --> create a project
+Example .. cargo new minigrep --> create a project
 
-adding to main..... but then refactoring
+For day1
+cargo new day1 --> this creates the day1 folder, and src folder with main.rs
+
+Added file lib.rs to put more of the tested code with main calling it.
 
