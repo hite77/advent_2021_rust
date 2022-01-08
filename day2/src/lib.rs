@@ -12,12 +12,12 @@ pub struct Position {
 pub struct Position2 {
   pub horizontal: i32,
   pub depth: i32,
-  aim: i32	
+  aim: i32
 }
 
 impl Position2 {
 	pub fn parse(&mut self, contents: &str) -> i32 {
-				let word_regex = Regex::new(r"\w+").unwrap();
+		let word_regex = Regex::new(r"\w+").unwrap();
 		let num_regex = Regex::new(r"\d+").unwrap();
 
 	    //forward X increases the horizontal position by X units.
@@ -25,9 +25,9 @@ impl Position2 {
     	//up X decreases the depth by X units.
 
 		for line in contents.lines() {
-			 
+
 			 let amount: i32;
-			 
+
 			 match num_regex.find(line) {
 	        // Get the match slice from string, prints "123"
 	        Some(x) => amount = line[x.0 .. x.1].parse().unwrap(),
@@ -45,7 +45,7 @@ impl Position2 {
     			},
     			"down" => self.aim += amount,
     			"up" => self.aim -= amount,
-    			_ => println!("no match"),					
+    			_ => println!("no match"),
 				},
 			}
 		}
@@ -64,9 +64,9 @@ impl Position {
     	//up X decreases the depth by X units.
 
 		for line in contents.lines() {
-			 
+
 			 let amount: i32;
-			 
+
 			 match num_regex.find(line) {
 	        // Get the match slice from string, prints "123"
 	        Some(x) => amount = line[x.0 .. x.1].parse().unwrap(),
@@ -79,7 +79,7 @@ impl Position {
     			"forward" => self.horizontal += amount,
     			"down" => self.depth += amount,
     			"up" => self.depth -= amount,
-    			_ => println!("no match"),					
+    			_ => println!("no match"),
 				},
 			}
 		}
@@ -147,6 +147,5 @@ forward 2";
         assert_eq!(60, position.depth);
         assert_eq!(900, answer_day2_part2);
     }
-
 
 }

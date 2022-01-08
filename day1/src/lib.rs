@@ -56,7 +56,7 @@ pub fn increases(contents: &str) -> i32 {
             {
                 count += 1;
             }
-            current_value = read_int;       
+            current_value = read_int;
         }
     }
 
