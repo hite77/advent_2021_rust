@@ -80,7 +80,7 @@ impl Vents {
                     }
                 }
             }
-            else {
+            else if line[1] == line[3] {
                 if line[0] < line[2]+1 {
                         for index in line[0]..line[2]+1 {
                         self.graph[line[1]][index] += 1;
@@ -89,6 +89,35 @@ impl Vents {
                 else {
                     for index in line[2]..line[0]+1 {
                         self.graph[line[1]][index] += 1;
+                    }
+                }
+            }
+            else {
+                // diagonals
+                let x_change : i32 = if line[0] < line[2] { 1 } else { -1 };
+                let y_change : i32 = if line[1] < line[3] { 1 } else { -1 };
+                let mut current_x: usize = line[0];
+                let mut current_y: usize = line[1];
+
+                loop {
+                    self.graph[current_y][current_x] += 1;
+
+                    if current_x == line[2]{
+                        break;
+                    }
+
+                    if x_change > 0 {
+                        current_x += 1;
+                    }
+                    else {
+                        current_x -= 1;
+                    }
+
+                    if y_change > 0 {
+                        current_y += 1;
+                    }
+                    else {
+                        current_y -= 1;
                     }
                 }
             }
@@ -114,12 +143,19 @@ impl Vents {
         self.plot();
         self.sum()
     }
+
+    pub fn part_two(&mut self, contents: &str) -> i32 {
+        self.parse(contents);
+        self.extents();
+        self.plot();
+        self.sum()
+    }
 }
 
 pub fn run() -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string("input")?;
     println!("day5 part1 answer: {}", Vents::new().part_one(&contents));
-    //println!("day4 part2 answer: {}", Bingo::new().part_two(&contents));
+    println!("day5 part2 answer: {}", Vents::new().part_two(&contents));
     Ok(())
 }
 
@@ -243,5 +279,24 @@ mod tests {
         let mut vents = Vents::new();
         let answer = vents.part_one(&contents);
         assert_eq!(5, answer);
+    }
+
+   #[test]
+    fn first_example_part_two() {
+        let contents = "\
+0,9 -> 5,9
+8,0 -> 0,8
+9,4 -> 3,4
+2,2 -> 2,1
+7,0 -> 7,4
+6,4 -> 2,0
+0,9 -> 2,9
+3,4 -> 1,4
+0,0 -> 8,8
+5,5 -> 8,2
+9,6 -> 9,9";
+        let mut vents = Vents::new();
+        let answer = vents.part_two(&contents);
+        assert_eq!(12, answer);
     }
 }
