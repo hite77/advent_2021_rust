@@ -1,3 +1,8 @@
+use std::process;
+
 fn main() {
-    println!("Hello, world!");
+    if let Err(e) = day10::run() {
+       println!("Application error: {}", e);
+       process::exit(1);
+    }
 }
