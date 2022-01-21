@@ -4,7 +4,7 @@ use std::error::Error;
 pub fn run() -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string("input")?;
     println!("day11 part1 answer: {}", DumboOctopus::new().part_one(&contents));
-    //println!("day11 part2 answer: {}", DumboOctopus::new().part_two(&contents));
+    println!("day11 part2 answer: {}", DumboOctopus::new().part_two(&contents));
     Ok(())
 }
 
@@ -44,9 +44,15 @@ impl DumboOctopus {
     }
 
     pub fn part_one(&mut self, contents: &str) -> usize {
-        println!("inside part one");
         self.parse(contents);
-        self.steps(100)
+        let (flashes, _frame) = self.steps(100, false);
+        flashes
+    }
+
+    pub fn part_two(&mut self, contents: &str) -> usize {
+        self.parse(contents);
+        let (_flashes, frame) = self.steps(100, true);
+        frame
     }
 
     pub fn update_in_grid(&mut self, row:i32, column: i32) {
@@ -74,13 +80,17 @@ impl DumboOctopus {
         self.update_in_grid(row+1, column+1);
     }
 
-    pub fn steps(&mut self, count: usize) -> usize {
+    pub fn steps(&mut self, count: usize, keep_going : bool) -> (usize, usize) {
         let mut completed: usize = 0;
         let mut flashes: usize = 0;
-        while completed != count {
-            // increment by 1.....
+        let mut step_all_flash: usize = 0;
+        while completed != count || keep_going {
+            let mut all_flash: bool = true;
             for row_index in 0..self.grid.len() {
                 for item_index in 0..self.grid[0].len() {
+                    if self.grid[row_index][item_index] != 0 {
+                        all_flash = false;
+                    }
                     self.grid[row_index][item_index] = self.grid[row_index][item_index] + 1;
                     if self.grid[row_index][item_index] > 9 && self.flash[row_index][item_index] == 0 {
                         self.flash[row_index][item_index] = 1;
@@ -89,6 +99,11 @@ impl DumboOctopus {
                         self.call_all_around(irow, icolumn);
                     }
                 }
+            }
+
+            if all_flash && step_all_flash == 0 {
+                step_all_flash = completed;
+                break;
             }
 
             // clear higher than 9's to zero
@@ -100,13 +115,13 @@ impl DumboOctopus {
                     if self.flash[row_index][item_index] == 1 {
                         flashes += 1;
                         self.flash[row_index][item_index] = 0;
-                    }
+                    } 
                 }
             }
-            println!("completed: {} grid {:?}", completed, self.grid);
+            
             completed += 1;
         }
-        flashes
+        (flashes , step_all_flash)
     }
 }
 
@@ -126,14 +141,16 @@ mod tests {
 
         let mut dumbo_octopus = DumboOctopus::new();
         dumbo_octopus.parse(contents);
-        assert_eq!(9, dumbo_octopus.steps(1));
+        let (flashes, _frame) = dumbo_octopus.steps(1, false);
+        assert_eq!(9, flashes);
         dumbo_octopus = DumboOctopus::new();
         dumbo_octopus.parse(contents);
-        assert_eq!(9, dumbo_octopus.steps(2));
+        let (flashes, _frame) = dumbo_octopus.steps(2, false);
+        assert_eq!(9, flashes);
     }
 
     #[test]
-    fn part_one_example() {
+    fn part_one_and_two_example() {
         let contents = "\
 5483143223
 2745854711
@@ -146,7 +163,7 @@ mod tests {
 4846848554
 5283751526
 ";
-        println!("part one full test");
         assert_eq!(1656, DumboOctopus::new().part_one(contents));
+        assert_eq!(195, DumboOctopus::new().part_two(contents));
     }
 }
